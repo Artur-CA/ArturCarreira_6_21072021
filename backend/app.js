@@ -1,15 +1,19 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const express = require('express'); // Import Express
+const bodyParser = require('body-parser'); // Import Body-parser
+const mongoose = require('mongoose'); // Import Mongoose 
 
-const app = express();
+const userRoutes = require('./routes/user'); // Import router utilisateur
 
+const app = express(); // Création application Express
+
+// Connexion MongoDB
 mongoose.connect('mongodb+srv://artur:arturOC@cluster0.amdby.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+// Middleware CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -17,32 +21,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/api/sauces', (req, res, next) => {
-  console.log(req.body);
-  res.status(201).json({
-    message: 'Objet créé !'
-  });
-});
+// Modification en objet JS
+app.use(bodyParser());
 
-app.use('/api/sauces', (req, res, next) => {
-  const sauces = [
-      {
-        _id: 'string',
-        name: 'string',
-        manufacturer: 'string',
-        description: 'string',
-        heat: 'number',
-        likes: 'number',
-        dislikes: 'number',
-        imageUrl: 'string',
-        mainPepper: 'string',
-        usersLiked: 'string[]',
-        usersDisliked: 'string[]',
-        userId: 'string'
-      }
-    ];
-    
-  res.status(200).json(sauces);
-  });
+// Acçès aux routes pour les utilisateurs
+app.use('/api/auth', userRoutes);
 
+// Export application Express
 module.exports = app;
