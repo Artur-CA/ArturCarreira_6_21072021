@@ -1,8 +1,10 @@
-const express = require('express'); // Import Express
-const bodyParser = require('body-parser'); // Import Body-parser
-const mongoose = require('mongoose'); // Import Mongoose 
-
-const userRoutes = require('./routes/user'); // Import router utilisateur
+const express = require('express'); 
+const bodyParser = require('body-parser'); 
+const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
+const path = require('path'); // Acçès chemin fichiers entrants
+const userRoutes = require('./routes/user'); 
+const sauceRoutes = require('./routes/sauce'); 
 
 const app = express(); // Création application Express
 
@@ -22,10 +24,12 @@ app.use((req, res, next) => {
 });
 
 // Modification en objet JS
-app.use(bodyParser());
+app.use(bodyParser.json());
 
-// Acçès aux routes pour les utilisateurs
+// Acçès aux routes
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 // Export application Express
 module.exports = app;
