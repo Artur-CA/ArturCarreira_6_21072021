@@ -1,6 +1,9 @@
 // Import modèle de données "sauce"
 const Sauce = require('../models/sauce');
 
+// Import package fs (acçès aux opérations liées au système de fichiers)
+const fs = require ('fs');
+
 // Création sauce
 exports.createSauce = (req, res, next) => 
 {
@@ -50,7 +53,14 @@ exports.modifySauce = (req, res, next) =>
 // Suppression d'une sauce
 exports.deleteSauce = (req, res, next) => 
 {
-    Sauce.deleteOne({_id : req.params.id})
-    .then( () => res.status(200).json({ message: 'Sauce supprimée !'}))
-    .catch( error => res.status(404).json({ error }))
+    Sauce.findOne({ _id: req.params.id })
+      .then(sauce => {
+        const filename = sauce.imageUrl.split('/images/')[1]; // Récupération nom du fichier
+        fs.unlink(`images/${filename}`, () => { // Fonction unlink() du package fs qui supprime le fichier du dossier
+          Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Sauce supprimé !'}))
+            .catch(error => res.status(400).json({ error }));
+        });
+      })
+      .catch(error => res.status(500).json({ error }));
 };
