@@ -18,7 +18,8 @@ mongoose.connect('mongodb+srv://artur:arturOC@cluster0.amdby.mongodb.net/myFirst
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-// Middleware CORS  (système de sécurité qui bloque les requêtes malveillantes)
+// Middleware général appliqué à toutes les requêtes envoyées au serveur
+// afin d'éviter les erreurs CORS  (système de sécurité qui bloque les requêtes malveillantes)
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
