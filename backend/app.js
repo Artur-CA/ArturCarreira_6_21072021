@@ -10,6 +10,7 @@ const sauceRoutes = require('./routes/sauce');
 
 const app = express(); // Création application Express
 
+
 // Connexion MongoDB
 mongoose.connect('mongodb+srv://artur:arturOC@cluster0.amdby.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
