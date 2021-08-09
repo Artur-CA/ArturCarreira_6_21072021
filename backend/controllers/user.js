@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 // Package pour créer et vérifier des tokens d'authentification
 const jwt = require('jsonwebtoken');
 
+// Package crypto-js
+const crypto = require('crypto-js');
+
 // Import de l'utilisateur
 const User = require('../models/user');
 
@@ -14,7 +17,7 @@ exports.signup = (req, res, next) =>
   bcrypt.hash(req.body.password, 10) //  Appel de la fonction de hachage de bcrypt (cryptage du mdp 10 fois = sécurisation)
     .then(hash => {
       const user = new User({
-        email: req.body.email,
+        email: crypto.HmacSHA512(req.body.email, 'RANDOM_KEY_SECRET').toString(), // Cryptage de l'email
         password: hash
       });
       user.save()
@@ -28,7 +31,7 @@ exports.signup = (req, res, next) =>
 // Connexion de l'utilisateur
 exports.login = (req, res, next) => 
 {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: crypto.HmacSHA512(req.body.email, 'RANDOM_KEY_SECRET').toString() }) // Recherche l'utilisateur dans la BDD qui correspond à l'email de la requête
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
